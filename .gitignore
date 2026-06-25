@@ -9,6 +9,7 @@ node_modules/
 # Build output
 dist/
 .veryfront/
+data/
 
 # Local AI model cache
 .cache/

@@ -8,6 +8,7 @@ Use these folders as runtime boundaries. Create folders only when the feature ne
 
 - `app/`: pages, layouts, route handlers, and user-facing API routes.
 - `agents/`: model reasoning and tool use.
+- `knowledge/`: approved project knowledge indexed by `ragStore`.
 - `tools/`: deterministic callable capabilities.
 - `workflows/`: multi-step coordination.
 - `skills/`: reusable agent instructions in `skills/<id>/SKILL.md`.
@@ -25,7 +26,7 @@ Use these folders as runtime boundaries. Create folders only when the feature ne
 ## Coding agent loop
 
 Prefer Veryfront scaffold tools over hand-written boilerplate. Keep app routes,
-agents, tools, workflows, and skills in their expected folders.
+agents, knowledge, tools, workflows, and skills in their expected folders.
 
 ## Inference
 
