@@ -1,10 +1,10 @@
 import { createAgUiHandler } from "veryfront/agent";
 
-import { retrieveKnowledge } from "../../../lib/knowledge.ts";
+import { normalizeKnowledgeQuery, retrieveKnowledge } from "../../../lib/knowledge.ts";
 
 export const POST = createAgUiHandler("support-agent", {
   beforeStream: async ({ lastUserText }) => {
-    const query = lastUserText.trim();
+    const query = normalizeKnowledgeQuery(lastUserText);
     if (!query) return;
 
     const { context } = await retrieveKnowledge(query);

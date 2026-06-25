@@ -48,6 +48,9 @@ After adding files to `knowledge/`, refresh the local index:
 curl -X POST http://localhost:3010/api/ingest
 ```
 
+The ingest route is a development convenience. It returns 404 in production
+unless `VERYFRONT_ALLOW_LOCAL_INGEST=1` is set.
+
 For local development, delete `data/knowledge-index.json` to rebuild the index
 from changed source files.
 
