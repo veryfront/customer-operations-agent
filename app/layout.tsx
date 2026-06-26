@@ -1,4 +1,3 @@
-import "../globals.css";
 import { Head } from "veryfront/head";
 
 export default function RootLayout({
@@ -9,7 +8,7 @@ export default function RootLayout({
   return (
     <>
       <Head>
-        <title>AI Chat</title>
+        <title>Customer Operations Agent</title>
       </Head>
       <div className="flex flex-col h-screen bg-white dark:bg-neutral-900">
         {children}

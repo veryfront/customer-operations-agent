@@ -1,6 +1,8 @@
 ---
 name: support-escalation
 description: Triage customer issues and prepare support escalation summaries.
+allowed-tools:
+  - search_knowledge
 ---
 
 # Support Escalation

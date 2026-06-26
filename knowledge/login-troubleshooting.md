@@ -1,3 +1,19 @@
+---
+title: Login troubleshooting
+description: Resolve sign-in, SSO, workspace, session, identity provider, and account access failures.
+type: runbook
+resource: customer-operations
+source: customer-operations-agent
+source_type: demo
+tags:
+  - login
+  - sso
+  - authentication
+  - workspace
+  - access
+added: 2026-06-26
+---
+
 # Login troubleshooting
 
 Use this when a customer cannot sign in, cannot complete SSO, or reports an account access failure.
