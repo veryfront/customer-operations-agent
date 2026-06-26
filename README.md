@@ -64,10 +64,20 @@ agent response requires model credentials.
 ## Run the workflow
 
 ```bash
+VERYFRONT_API_TOKEN="$(cat ~/.config/veryfront/token)" \
 veryfront workflow run escalate-ticket \
-  --input '{"customer":"Acme Retail","issue":"Users cannot log in with SSO after the latest deployment","severity":"high"}'
+  --input '{"customer":"Acme Retail","description":"Users cannot log in with SSO after the latest deployment","severity":"high"}'
 ```
 
 The workflow retrieves approved project knowledge first, loads the
 `support-escalation` skill, and produces an escalation summary with scope,
 evidence, owner, and next action.
+
+## Deploy
+
+```bash
+veryfront deploy --env preview --force
+```
+
+The deployed app indexes tracked files from `knowledge/` through Veryfront
+Cloud. Generated local index files under `data/` are intentionally not committed.
