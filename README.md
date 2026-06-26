@@ -6,9 +6,10 @@ A reproducible Veryfront Code example for a customer operations support agent.
 
 - Support agent with a streaming chat UI
 - OKF project knowledge in `knowledge/`
-- Local `search_knowledge` tool with the same contract as Studio/Cloud
+- Source-controlled `search_knowledge` tool for local and Cloud runs
 - `escalate-ticket` workflow for durable support escalation
 - `support-escalation` skill for repeatable triage guidance
+- Support triage eval suite for retrieval and grounded-answer quality
 - AG-UI endpoint for agent chat
 - `veryfront.config.ts` for project metadata
 - Version-pinned Veryfront dependency for repeatable installs
@@ -20,6 +21,10 @@ agents/support-agent.ts       Agent definition
 knowledge/                    Approved customer operations knowledge
 tools/search-knowledge.ts     Local search_knowledge parity tool
 workflows/escalate-ticket.ts  Support escalation workflow
+evals/
+  support-triage.eval.ts      Agent retrieval and answer quality eval
+  datasets/
+    support-triage.json       Regression cases with expected knowledge
 skills/
   support-escalation/
     SKILL.md                  Agent triage guidance
@@ -34,25 +39,15 @@ veryfront.config.ts           Project configuration
 Source knowledge lives in `knowledge/` as Markdown with OKF frontmatter.
 
 `tools/search-knowledge.ts` registers the standard `search_knowledge` tool with
-`createSearchKnowledgeTool()`. Local chat and workflows use the same tool name
-and response shape as Studio/Cloud. The local tool reads source-controlled OKF
-frontmatter directly; it does not build an embedding index or re-index on chat
-requests.
+`createSearchKnowledgeTool()`. Local chat, local workflows, and Cloud workflow
+runs use the same tool name and response shape. The tool reads the
+source-controlled OKF Markdown files directly; it does not build an embedding
+index or re-index on chat requests.
 
-In hosted projects, Studio/Cloud can also provide `search_knowledge` over
-platform project knowledge. Keep the local tool when knowledge should travel
-with the codebase and workflows should be reproducible locally. Omit
-`tools/search-knowledge.ts` when the hosted platform knowledge backend should
-own the tool name.
-
-Cloud knowledge ingestion is an optional deploy/setup step for the hosted
-platform knowledge backend:
-
-```bash
-veryfront knowledge ingest --path knowledge --all --recursive
-```
-
-It is not required for the source-controlled local tool above.
+For this demo, keep knowledge source-controlled. Do not run
+`veryfront knowledge ingest` unless you are intentionally moving the project to
+hosted platform knowledge. Mixing ingested copies with the source files can
+return duplicate results.
 
 ## Run locally
 
@@ -84,16 +79,37 @@ The workflow searches approved project knowledge with `search_knowledge`, loads
 the `support-escalation` skill, and produces an escalation summary with scope,
 evidence, owner, and next action.
 
+## Run evals
+
+The eval suite measures whether the agent retrieves the right knowledge and
+keeps its triage answer grounded in that evidence.
+
+Requires `veryfront@0.1.945` or newer.
+
+```bash
+veryfront eval support-triage \
+  --report-dir .veryfront/evals/support-triage \
+  --json
+```
+
+The suite checks:
+
+- `agent.calledTool("search_knowledge")`
+- `agent.noFailedTools()`
+- `knowledge.recallAtK`
+- `knowledge.precisionAtK`
+- `knowledge.mrr`
+- `answer.groundedness`
+
+Each dataset row declares `metadata.expectedKnowledge`, so retrieval quality is
+measured against the specific runbooks the case should use.
+
 ## Deploy
 
 ```bash
 veryfront deploy --env preview --force
 ```
 
-If the deployment should use hosted platform knowledge instead of the
-source-controlled local tool, remove `tools/search-knowledge.ts` and ingest the
-knowledge source during setup:
-
-```bash
-veryfront knowledge ingest --path knowledge --all --recursive
-```
+Cloud deploys the same project files. The hosted workflow can run
+`escalate-ticket` and resolve `search_knowledge` against the `knowledge/` files
+in this repository.
