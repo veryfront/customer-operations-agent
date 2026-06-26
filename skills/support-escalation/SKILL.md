@@ -8,6 +8,9 @@ description: Triage customer issues and prepare support escalation summaries.
 Use this skill when a customer issue may need escalation to engineering,
 finance, success, or operations.
 
+This skill is guidance-only. Use the process below directly; do not call
+executable skill scripts unless a future version explicitly lists one.
+
 ## Process
 
 1. Confirm the customer, workspace, affected users, severity, and exact symptom.
