@@ -5,8 +5,8 @@ A reproducible Veryfront Code example for a customer operations support agent.
 ## What's included
 
 - Support agent with a streaming chat UI
-- Project knowledge in `knowledge/` indexed with `ragStore`
-- Retrieval bridge for workflow-safe approved support knowledge
+- Project knowledge in `knowledge/` retrieved with `projectKnowledge()`
+- Explicit local knowledge indexing with `npm run index:knowledge`
 - `escalate-ticket` workflow for durable support escalation
 - `support-escalation` skill for repeatable triage guidance
 - AG-UI endpoint for agent chat
@@ -18,8 +18,7 @@ A reproducible Veryfront Code example for a customer operations support agent.
 ```
 agents/support-agent.ts       Agent definition
 knowledge/                    Approved customer operations knowledge
-lib/knowledge.ts              Shared retrieval helper
-store.ts                      RAG store configuration
+scripts/index-knowledge.mjs   Local knowledge indexing script
 tools/retrieve-knowledge.ts   Workflow retrieval bridge
 workflows/escalate-ticket.ts  Support escalation workflow
 skills/
@@ -27,7 +26,6 @@ skills/
     SKILL.md                  Agent triage guidance
 app/
   api/ag-ui/route.ts          AG-UI endpoint
-  api/ingest/route.ts         Knowledge indexing endpoint
   page.tsx                    Chat interface
 veryfront.config.ts           Project configuration
 ```
@@ -36,23 +34,15 @@ veryfront.config.ts           Project configuration
 
 ```bash
 npm install
+npm run index:knowledge
 npm run build -- --ssg
 npm run dev -- --port 3010
 ```
 
 Open `http://localhost:3010`.
 
-After adding files to `knowledge/`, refresh the local index:
-
-```bash
-curl -X POST http://localhost:3010/api/ingest
-```
-
-The ingest route is a development convenience. It returns 404 in production
-unless `VERYFRONT_ALLOW_LOCAL_INGEST=1` is set.
-
-For local development, delete `data/knowledge-index.json` to rebuild the index
-from changed source files.
+After changing files in `knowledge/`, run `npm run index:knowledge` again.
+The local index is generated under `data/` and is intentionally ignored by git.
 
 To call the agent route with a live model, run `veryfront login` or set one of
 `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or
@@ -76,8 +66,10 @@ evidence, owner, and next action.
 ## Deploy
 
 ```bash
+veryfront knowledge ingest --path knowledge --all --recursive
 veryfront deploy --env preview --force
 ```
 
-The deployed app indexes tracked files from `knowledge/` through Veryfront
-Cloud. Generated local index files under `data/` are intentionally not committed.
+The deployed app retrieves from Veryfront Cloud's shared project knowledge
+backend. Knowledge ingestion is an explicit deploy/setup step; chat requests
+retrieve from the prepared backend and do not re-index source files.
