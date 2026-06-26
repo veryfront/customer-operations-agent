@@ -30,6 +30,26 @@ app/
 veryfront.config.ts           Project configuration
 ```
 
+## Knowledge ingestion
+
+Knowledge ingestion is an explicit setup and deploy step in this demo. The app
+does not scan or re-index source files during chat requests.
+
+- Source knowledge lives in `knowledge/`.
+- Local indexing runs with `npm run index:knowledge`. It reads `knowledge/` and
+  writes a local index under `data/`, which is ignored by git.
+- Cloud indexing runs with
+  `veryfront knowledge ingest --path knowledge --all --recursive`. It stores the
+  same project knowledge in Veryfront Cloud for the deployed agent.
+- Runtime retrieval happens through `projectKnowledge().retrieve(...)` in
+  `app/api/ag-ui/route.ts` and `tools/retrieve-knowledge.ts`. Those calls read
+  from the prepared local index or Cloud backend; they do not perform ingestion.
+
+Run ingestion once during setup, and again whenever files in `knowledge/`
+change. If ingestion is skipped, the agent can still receive chat requests, but
+it will not have the approved customer operations knowledge available for
+retrieval.
+
 ## Run locally
 
 ```bash
@@ -41,8 +61,7 @@ npm run dev -- --port 3010
 
 Open `http://localhost:3010`.
 
-After changing files in `knowledge/`, run `npm run index:knowledge` again.
-The local index is generated under `data/` and is intentionally ignored by git.
+Run `npm run index:knowledge` again after changing files in `knowledge/`.
 
 To call the agent route with a live model, run `veryfront login` or set one of
 `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or
@@ -71,5 +90,5 @@ veryfront deploy --env preview --force
 ```
 
 The deployed app retrieves from Veryfront Cloud's shared project knowledge
-backend. Knowledge ingestion is an explicit deploy/setup step; chat requests
-retrieve from the prepared backend and do not re-index source files.
+backend. Run `veryfront knowledge ingest` during setup and after each knowledge
+change before relying on the deployed agent.
