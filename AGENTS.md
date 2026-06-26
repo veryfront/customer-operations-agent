@@ -8,7 +8,7 @@ Use these folders as runtime boundaries. Create folders only when the feature ne
 
 - `app/`: pages, layouts, route handlers, and user-facing API routes.
 - `agents/`: model reasoning and tool use.
-- `knowledge/`: approved project knowledge indexed by `ragStore`.
+- `knowledge/`: approved project knowledge retrieved through `projectKnowledge()`.
 - `tools/`: deterministic callable capabilities.
 - `workflows/`: multi-step coordination.
 - `skills/`: reusable agent instructions in `skills/<id>/SKILL.md`.
@@ -20,8 +20,9 @@ Use these folders as runtime boundaries. Create folders only when the feature ne
 2. Generate new files with `veryfront generate <type> <name>`.
 3. Inspect current CLI commands with `veryfront schema --json`.
 4. Verify discovered routes with `veryfront routes`.
-5. Run `npm run build -- --ssg` before shipping the example.
-6. Use https://veryfront.com/docs when local files and CLI schema do not answer a Veryfront API or convention question.
+5. Run `npm run index:knowledge` after changing files in `knowledge/`.
+6. Run `npm run build -- --ssg` before shipping the example.
+7. Use https://veryfront.com/docs when local files and CLI schema do not answer a Veryfront API or convention question.
 
 ## Coding agent loop
 

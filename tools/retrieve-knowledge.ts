@@ -1,7 +1,8 @@
 import { defineSchema } from "veryfront/schemas";
+import { projectKnowledge } from "veryfront/knowledge";
 import { tool } from "veryfront/tool";
 
-import { retrieveKnowledge } from "../lib/knowledge.ts";
+const knowledge = projectKnowledge();
 
 export default tool({
   id: "retrieveKnowledge",
@@ -11,5 +12,5 @@ export default tool({
       query: v.string().describe("Customer issue or operation to retrieve context for"),
     })
   )(),
-  execute: async ({ query }) => retrieveKnowledge(query),
+  execute: async ({ query }) => knowledge.retrieve(query),
 });
