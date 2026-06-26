@@ -8,11 +8,11 @@ Use these folders as runtime boundaries. Create folders only when the feature ne
 
 - `app/`: pages, layouts, route handlers, and user-facing API routes.
 - `agents/`: model reasoning and tool use.
-- `knowledge/`: approved project knowledge retrieved through `projectKnowledge()`.
-- `tools/`: deterministic callable capabilities.
+- `knowledge/`: approved project knowledge with OKF frontmatter for `search_knowledge`.
+- `tools/`: deterministic callable capabilities, including the local `search_knowledge` tool.
 - `workflows/`: multi-step coordination.
 - `skills/`: reusable agent instructions in `skills/<id>/SKILL.md`.
-- `veryfront.config.ts`: project metadata and router configuration.
+- `veryfront.config.ts`: project metadata.
 
 ## Developer loop
 
@@ -20,14 +20,15 @@ Use these folders as runtime boundaries. Create folders only when the feature ne
 2. Generate new files with `veryfront generate <type> <name>`.
 3. Inspect current CLI commands with `veryfront schema --json`.
 4. Verify discovered routes with `veryfront routes`.
-5. Run `npm run index:knowledge` after changing files in `knowledge/`.
-6. Run `npm run build -- --ssg` before shipping the example.
-7. Use https://veryfront.com/docs when local files and CLI schema do not answer a Veryfront API or convention question.
+5. Run `npm run build -- --ssg` before shipping the example.
+6. Use https://veryfront.com/docs when local files and CLI schema do not answer a Veryfront API or convention question.
 
 ## Coding agent loop
 
 Prefer Veryfront scaffold tools over hand-written boilerplate. Keep app routes,
-agents, knowledge, tools, workflows, and skills in their expected folders.
+agents, knowledge, tools, workflows, and skills in their expected folders. Use
+the `search_knowledge` tool contract for project knowledge instead of inventing
+project-specific retrieval tools.
 
 ## Inference
 

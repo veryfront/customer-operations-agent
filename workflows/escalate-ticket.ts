@@ -16,7 +16,7 @@ export default workflow({
   description: "Triage a customer issue and draft an escalation plan.",
   steps: ({ input }: { input: EscalationInput }) => [
     step("knowledge", {
-      tool: "retrieveKnowledge",
+      tool: "search_knowledge",
       input: {
         query: buildKnowledgeQuery(input),
       },
@@ -24,13 +24,9 @@ export default workflow({
     step("triage", {
       agent: "support-agent",
       input: ({ knowledge }) => ({
-        task: "Triage this customer issue using the approved knowledge context and decide whether escalation is needed.",
+        task: "Triage this customer issue using approved project knowledge and decide whether escalation is needed.",
         issue: input,
-        approvedKnowledge: knowledge.context,
-        knowledgeSources: knowledge.matches.map((match) => ({
-          title: match.title,
-          score: match.score,
-        })),
+        approvedKnowledge: knowledge,
       }),
     }),
     step("draft-escalation", {

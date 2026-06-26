@@ -1,3 +1,19 @@
+---
+title: Deployment incident triage
+description: Triage production incidents after deployments, releases, migrations, or environment changes.
+type: runbook
+resource: customer-operations
+source: customer-operations-agent
+source_type: demo
+tags:
+  - deployment
+  - incident
+  - production
+  - release
+  - rollback
+added: 2026-06-26
+---
+
 # Deployment incident triage
 
 Use this when a customer reports a production issue after a deployment, release, migration, or environment change.
