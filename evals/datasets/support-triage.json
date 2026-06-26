@@ -1,0 +1,114 @@
+[
+  {
+    "id": "sso-login-after-release",
+    "input": {
+      "customer": "Acme Retail",
+      "subject": "SSO login failures after release",
+      "description": "Users cannot sign in with SSO after yesterday's deployment. The customer says production support is blocked.",
+      "severity": "high"
+    },
+    "reference": "The answer should combine login troubleshooting with deployment incident triage and identify scope, missing evidence, likely owner, and next action.",
+    "metadata": {
+      "expectedKnowledge": [
+        "knowledge/login-troubleshooting.md",
+        "knowledge/deployment-incident-triage.md"
+      ],
+      "answerTerms": [
+        "scope",
+        "sso",
+        "deployment",
+        "owner",
+        "next action"
+      ],
+      "groundingTerms": [
+        "identity provider metadata",
+        "callback url",
+        "deployment status",
+        "runtime logs"
+      ]
+    }
+  },
+  {
+    "id": "billing-payment-failed",
+    "input": {
+      "customer": "Northstar Labs",
+      "subject": "Payment failed for active account",
+      "description": "The customer's renewal invoice failed payment, but the workspace is active and they need to avoid access interruption.",
+      "severity": "medium"
+    },
+    "reference": "The answer should route the issue to finance operations, collect billing evidence, and avoid promising commercial changes.",
+    "metadata": {
+      "expectedKnowledge": [
+        "knowledge/billing-escalation.md"
+      ],
+      "answerTerms": [
+        "invoice",
+        "finance",
+        "approval",
+        "owner",
+        "next action"
+      ],
+      "groundingTerms": [
+        "billing email",
+        "payment method",
+        "finance operations",
+        "commercial terms"
+      ]
+    }
+  },
+  {
+    "id": "deployment-errors-after-migration",
+    "input": {
+      "customer": "Atlas Finance",
+      "subject": "Production workflow errors after migration",
+      "description": "A migration shipped this morning and production users now see errors when completing the onboarding workflow.",
+      "severity": "critical"
+    },
+    "reference": "The answer should treat this as a deployment incident, collect impact and log evidence, and identify rollback or mitigation next steps.",
+    "metadata": {
+      "expectedKnowledge": [
+        "knowledge/deployment-incident-triage.md"
+      ],
+      "answerTerms": [
+        "impact",
+        "logs",
+        "rollback",
+        "owner",
+        "next action"
+      ],
+      "groundingTerms": [
+        "affected users",
+        "build logs",
+        "runtime logs",
+        "error rate"
+      ]
+    }
+  },
+  {
+    "id": "workspace-access-one-user",
+    "input": {
+      "customer": "Helio Health",
+      "subject": "One user cannot access the workspace",
+      "description": "One support manager cannot access the correct workspace after changing browsers. Other users are unaffected.",
+      "severity": "low"
+    },
+    "reference": "The answer should keep the issue scoped to login or workspace access, ask for missing sign-in evidence, and avoid escalating as a platform incident.",
+    "metadata": {
+      "expectedKnowledge": [
+        "knowledge/login-troubleshooting.md"
+      ],
+      "answerTerms": [
+        "workspace",
+        "browser",
+        "scope",
+        "owner",
+        "next action"
+      ],
+      "groundingTerms": [
+        "correct workspace",
+        "last successful login",
+        "clearing stale session cookies"
+      ]
+    }
+  }
+]
