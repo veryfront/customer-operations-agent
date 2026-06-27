@@ -23,11 +23,14 @@ executable skill scripts unless a future version explicitly lists one.
 
 ## Output
 
-Return a concise, professional summary. Do not use emoji, markdown horizontal
-rules, decorative separators, or large tables. Include:
+Return a concise, professional summary. Start the final answer exactly with
+`**Issue**` and nothing before it. Do not use emoji, markdown horizontal rules,
+decorative separators, large tables, or progress narration. Use tools silently.
+Include:
 
 - issue
 - severity
 - known facts
+- missing evidence
 - likely owner
 - next action
