@@ -53,7 +53,8 @@ return duplicate results.
 
 ```bash
 npm install
-npm run build -- --ssg
+veryfront routes
+npm run build
 npm run dev -- --port 3010
 ```
 
@@ -63,8 +64,9 @@ To call the agent route with a live model, run `veryfront login` or set one of
 `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or
 `GOOGLE_API_KEY`.
 
-The app can load, build, and expose the AG-UI route without credentials. A live
-agent response requires model credentials.
+The app can load, build, and expose the AG-UI route without credentials. Use
+the workflow and eval commands below to verify agent behavior. A live agent
+response requires model credentials.
 
 ## Run the workflow
 
