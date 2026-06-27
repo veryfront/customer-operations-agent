@@ -7,24 +7,11 @@
       "description": "Users cannot sign in with SSO after yesterday's deployment. The customer says production support is blocked.",
       "severity": "high"
     },
-    "reference": "The answer should combine login troubleshooting with deployment incident triage and identify scope, missing evidence, likely owner, and next action.",
+    "reference": "The answer should treat this as a high-priority SSO incident after a deployment, confirm customer impact and missing authentication evidence, review release and runtime signals, assign the right owner, and propose the next customer-safe action without guessing the root cause.",
     "metadata": {
       "expectedKnowledge": [
         "knowledge/login-troubleshooting.md",
         "knowledge/deployment-incident-triage.md"
-      ],
-      "answerTerms": [
-        "scope",
-        "sso",
-        "deployment",
-        "owner",
-        "next action"
-      ],
-      "groundingTerms": [
-        "identity provider metadata",
-        "callback url",
-        "deployment status",
-        "runtime logs"
       ]
     }
   },
@@ -36,23 +23,10 @@
       "description": "The customer's renewal invoice failed payment, but the workspace is active and they need to avoid access interruption.",
       "severity": "medium"
     },
-    "reference": "The answer should route the issue to finance operations, collect billing evidence, and avoid promising commercial changes.",
+    "reference": "The answer should route the renewal payment issue to finance operations, ask for invoice and payment-method evidence, protect customer access where policy allows, and avoid promising refunds, discounts, or commercial changes without approval.",
     "metadata": {
       "expectedKnowledge": [
         "knowledge/billing-escalation.md"
-      ],
-      "answerTerms": [
-        "invoice",
-        "finance",
-        "approval",
-        "owner",
-        "next action"
-      ],
-      "groundingTerms": [
-        "billing email",
-        "payment method",
-        "finance operations",
-        "commercial terms"
       ]
     }
   },
@@ -64,23 +38,10 @@
       "description": "A migration shipped this morning and production users now see errors when completing the onboarding workflow.",
       "severity": "critical"
     },
-    "reference": "The answer should treat this as a deployment incident, collect impact and log evidence, and identify rollback or mitigation next steps.",
+    "reference": "The answer should handle this as a critical deployment incident, collect affected-user and log evidence, check build and runtime signals, identify rollback or mitigation options, and keep the customer update factual.",
     "metadata": {
       "expectedKnowledge": [
         "knowledge/deployment-incident-triage.md"
-      ],
-      "answerTerms": [
-        "impact",
-        "logs",
-        "rollback",
-        "owner",
-        "next action"
-      ],
-      "groundingTerms": [
-        "affected users",
-        "build logs",
-        "runtime logs",
-        "error rate"
       ]
     }
   },
@@ -92,22 +53,10 @@
       "description": "One support manager cannot access the correct workspace after changing browsers. Other users are unaffected.",
       "severity": "low"
     },
-    "reference": "The answer should keep the issue scoped to login or workspace access, ask for missing sign-in evidence, and avoid escalating as a platform incident.",
+    "reference": "The answer should keep this scoped to a single-user workspace access problem, ask for last successful login and browser/session evidence, suggest safe local checks, and avoid escalating it as a platform-wide incident.",
     "metadata": {
       "expectedKnowledge": [
         "knowledge/login-troubleshooting.md"
-      ],
-      "answerTerms": [
-        "workspace",
-        "browser",
-        "scope",
-        "owner",
-        "next action"
-      ],
-      "groundingTerms": [
-        "correct workspace",
-        "last successful login",
-        "clearing stale session cookies"
       ]
     }
   }
