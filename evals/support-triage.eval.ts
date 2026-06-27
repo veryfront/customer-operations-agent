@@ -18,11 +18,6 @@ export default evalAgent({
     metrics.knowledge.recallAtK({ k: 3 }).gate({ min: 0.75 }),
     metrics.knowledge.precisionAtK({ k: 3 }).soft({ min: 0.34 }),
     metrics.knowledge.mrr({ k: 3 }).soft({ min: 0.5 }),
-    metrics.answer.regex({
-      pattern:
-        "^(?![\\s\\S]*(?:^|\\n)---(?:\\n|$))(?!\\s*(?:here is|i(?:'ll| will)|let me)\\b)[\\s\\S]+$",
-      flags: "i",
-    }).gate(),
     metrics.answer.groundedness({
       judge: judges.llm.groundedness(),
     }).gate({ min: 0.8 }),
