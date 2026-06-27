@@ -84,7 +84,7 @@ evidence, owner, and next action.
 The eval suite measures whether the agent retrieves the right knowledge and
 keeps its triage answer grounded in that evidence.
 
-Requires `veryfront@0.1.945` or newer.
+This repo pins `veryfront@0.1.951`.
 
 ```bash
 veryfront eval support-triage \
@@ -103,6 +103,23 @@ The suite checks:
 
 Each dataset row declares `metadata.expectedKnowledge`, so retrieval quality is
 measured against the specific runbooks the case should use.
+
+To compare a strong baseline with cheaper candidate models, keep the baseline
+explicit and pass candidates as repeatable flags. The baseline is the reference
+model for deltas; candidates are the set of alternatives to test.
+
+```bash
+veryfront eval support-triage \
+  --baseline-model anthropic/claude-sonnet-4-6 \
+  --candidate-model moonshotai/kimi-k2.6 \
+  --report-dir .veryfront/evals/support-triage-models \
+  --json
+```
+
+The comparison report writes per-model results plus `comparison.json`, with
+`baselineModel` and `candidateModels` kept separate from the per-model summary
+list. If a candidate introduces gate failures, the command exits nonzero and the
+report explains whether to keep the baseline or promote a candidate.
 
 ## Deploy
 
