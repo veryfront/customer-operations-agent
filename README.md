@@ -123,6 +123,11 @@ The comparison report writes per-model results plus `comparison.json`, with
 list. If any evaluated model has gate failures, the command exits nonzero and
 the report explains whether to keep the baseline or promote a candidate.
 
+When the eval runs through Veryfront Cloud, the comparison report also includes
+gateway-sourced input/output tokens, billable tokens, provider cost, Veryfront
+charge, credits, and cost source. Local/direct-provider runs keep cost as
+`not measured` unless a gateway supplies billing metadata.
+
 ## Deploy
 
 ```bash
