@@ -86,13 +86,16 @@ evidence, owner, and next action.
 The eval suite measures whether the agent retrieves the right knowledge and
 keeps its triage answer grounded in that evidence.
 
-This repo pins `veryfront@0.1.962`.
+This repo pins `veryfront@0.1.966`.
 
 ```bash
-veryfront eval support-triage \
-  --report-dir .veryfront/evals/support-triage \
-  --json
+veryfront eval support-triage --json
 ```
+
+By default, the report is written to a timestamped folder under
+`.veryfront/evals/`, for example
+`.veryfront/evals/20260628_140654566-support-triage/`. Use `--report-dir` only
+when CI needs a deterministic output path.
 
 The suite checks:
 
@@ -114,14 +117,14 @@ model for deltas; candidates are the set of alternatives to test.
 veryfront eval support-triage \
   --baseline-model anthropic/claude-sonnet-4-6 \
   --candidate-model moonshotai/kimi-k2.6 \
-  --report-dir .veryfront/evals/support-triage-models \
   --json
 ```
 
-The comparison report writes per-model results plus `comparison.json`, with
-`baselineModel` and `candidateModels` kept separate from the per-model summary
-list. If any evaluated model has gate failures, the command exits nonzero and
-the report explains whether to keep the baseline or promote a candidate.
+The comparison report writes per-model results plus `comparison.json` and
+`comparison.md` in the timestamped report folder, with `baselineModel` and
+`candidateModels` kept separate from the per-model summary list. If any
+evaluated model has gate failures, the command exits nonzero and the report
+explains whether to keep the baseline or promote a candidate.
 
 When the eval runs through Veryfront Cloud, the comparison report also includes
 gateway-sourced input/output tokens, billable tokens, provider cost, Veryfront
