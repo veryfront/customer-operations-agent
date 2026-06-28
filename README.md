@@ -86,7 +86,7 @@ evidence, owner, and next action.
 The eval suite measures whether the agent retrieves the right knowledge and
 keeps its triage answer grounded in that evidence.
 
-This repo pins `veryfront@0.1.959`.
+This repo pins `veryfront@0.1.962`.
 
 ```bash
 veryfront eval support-triage \
