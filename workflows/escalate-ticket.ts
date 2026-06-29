@@ -5,10 +5,12 @@ type EscalationInput = {
   subject?: string;
   description: string;
   severity?: string;
+  priority?: string;
+  source?: string;
 };
 
 function buildKnowledgeQuery(input: EscalationInput): string {
-  return [input.subject, input.description, input.severity].filter(Boolean).join("\n");
+  return [input.subject, input.description, input.severity, input.priority].filter(Boolean).join("\n");
 }
 
 export default workflow({

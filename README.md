@@ -2,7 +2,7 @@
 
 A Veryfront Code example for building, evaluating, and deploying a customer operations agent.
 
-It includes a chat surface, an agent, approved knowledge, a reusable skill, a workflow, evals, and a deploy path to Veryfront Cloud.
+It includes a chat surface, an agent, approved knowledge, a reusable skill, a workflow, source-defined triggers, evals, and a deploy path to Veryfront Cloud.
 
 Use it as a starting point for support escalation agents, customer operations agents, or any agent that needs to answer from approved runbooks and produce grounded next actions.
 
@@ -13,6 +13,7 @@ Use it as a starting point for support escalation agents, customer operations ag
 - [OKF Markdown knowledge](https://veryfront.com/docs/cloud/knowledge) in `knowledge/`
 - The standard `search_knowledge` tool for local and Cloud runs
 - An `escalate-ticket` workflow for support escalation
+- Source-defined schedules and webhooks that can run locally and reconcile to Cloud on deploy
 - A `support-escalation` skill that defines the triage process
 - An eval suite for retrieval quality, tool reliability, groundedness, and model comparison
 - A Veryfront Cloud deploy path using the same project files
@@ -26,6 +27,8 @@ flowchart LR
   Workflow["escalate-ticket workflow"] --> Agent
   Agent --> Skill["support-escalation skill"]
   Agent --> Knowledge["search_knowledge\nknowledge/*.md"]
+  Schedule["daily-support-triage schedule"] --> Workflow
+  Webhook["customer-escalation webhook"] --> Workflow
   Eval["support-triage eval"] --> Agent
 ```
 
@@ -51,11 +54,17 @@ tools/
   search-knowledge.ts         Standard search_knowledge tool
 workflows/
   escalate-ticket.ts          Multi-step escalation workflow
+schedules/
+  daily-support-triage.ts      Weekday escalation review trigger
+webhooks/
+  customer-escalation.ts       Incoming urgent-issue trigger
 skills/
   support-escalation/SKILL.md Triage instructions and output format
 evals/
   support-triage.eval.ts      Retrieval and answer-quality eval
   datasets/support-triage.json Regression cases with expected knowledge
+fixtures/
+  *.json                      Local trigger inputs
 veryfront.config.ts           Project metadata
 ```
 
@@ -106,11 +115,27 @@ npx veryfront workflow run escalate-ticket \
 
 The workflow searches approved project knowledge, asks `support-agent` to triage the issue, then drafts an escalation summary with scope, evidence, owner, and next action.
 
+## Run source-defined triggers
+
+Schedules and webhooks are source files, so they can be reviewed, tested, and deployed with the project.
+
+```bash
+npx veryfront schedules
+npx veryfront schedule run daily-support-triage --input fixtures/daily-support-triage.json
+```
+
+```bash
+npx veryfront webhooks
+npx veryfront webhook run customer-escalation --payload fixtures/customer-escalation-webhook.json
+```
+
+Both triggers target the same `escalate-ticket` workflow. Locally, the commands execute the workflow immediately. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these files.
+
 ## Run evals
 
 The eval suite checks whether the agent retrieves the right knowledge and keeps its answer grounded in that evidence.
 
-This repo pins `veryfront@0.1.973`.
+This repo pins `veryfront@0.1.975`.
 
 ```bash
 npx veryfront eval support-triage --json
@@ -151,13 +176,19 @@ npx veryfront deploy --env preview --force
 
 Cloud deploys the same project files. The hosted workflow can run `escalate-ticket` and resolve `search_knowledge` against the `knowledge/` files in this repository.
 
+Deploy reconciliation also syncs source-defined triggers:
+
+- `schedules/daily-support-triage.ts` becomes a hosted weekday schedule.
+- `webhooks/customer-escalation.ts` becomes a hosted webhook with a Cloud URL, secret, event history, and run history.
+
 ## Extend the example
 
 1. Add or edit OKF runbooks in `knowledge/`.
 2. Keep process instructions in `skills/support-escalation/SKILL.md`.
 3. Add deterministic integrations under `tools/` when the agent needs to act.
 4. Add workflows under `workflows/` for repeatable multi-step operations.
-5. Add eval cases in `evals/datasets/support-triage.json` before changing agent behavior.
-6. Run the eval suite before deploying or switching models.
+5. Add schedules or webhooks under `schedules/` and `webhooks/` when operations should run automatically.
+6. Add eval cases in `evals/datasets/support-triage.json` before changing agent behavior.
+7. Run the eval suite before deploying or switching models.
 
 Good changes keep the agent small and move reusable behavior into knowledge, skills, tools, workflows, and evals.
