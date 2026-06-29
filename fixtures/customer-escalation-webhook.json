@@ -1,0 +1,8 @@
+{
+  "customer": "Acme Retail",
+  "subject": "SSO login failures after release",
+  "description": "Users cannot sign in with SSO after the latest deployment. Production support is blocked.",
+  "severity": "high",
+  "priority": "urgent",
+  "source": "support_queue"
+}
