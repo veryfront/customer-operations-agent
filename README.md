@@ -8,9 +8,9 @@ Use it as a starting point for support escalation agents, customer operations ag
 
 ## What it demonstrates
 
-- A streaming chat UI backed by an AG-UI route
+- A streaming chat UI backed by an [AG-UI](https://docs.ag-ui.com/introduction) route
 - A `support-agent` that can use project skills and tools
-- OKF Markdown knowledge in `knowledge/`
+- [OKF Markdown knowledge](https://veryfront.com/docs/cloud/knowledge) in `knowledge/`
 - The standard `search_knowledge` tool for local and Cloud runs
 - An `escalate-ticket` workflow for support escalation
 - A `support-escalation` skill that defines the triage process
@@ -93,11 +93,9 @@ The agent should search approved knowledge, separate facts from assumptions, ide
 
 ## Knowledge
 
-Source knowledge lives in `knowledge/` as Markdown with OKF frontmatter.
+Source knowledge lives in `knowledge/` as Markdown with OKF frontmatter. See the [Veryfront knowledge docs](https://veryfront.com/docs/cloud/knowledge) and [CLI knowledge ingestion guide](https://veryfront.com/docs/code/guides/cli-knowledge-ingestion) when importing or hosting knowledge outside the repo.
 
 `tools/search-knowledge.ts` registers the standard `search_knowledge` tool with `createSearchKnowledgeTool()`. Local chat, local workflows, evals, and Cloud workflow runs use the same tool name and response shape.
-
-For this demo, keep knowledge source-controlled. Do not run `veryfront knowledge ingest` unless you are intentionally moving the project to hosted platform knowledge. Mixing ingested copies with source files can return duplicate results.
 
 ## Run the workflow
 
