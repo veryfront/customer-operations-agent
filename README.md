@@ -137,6 +137,7 @@ Use a strong baseline and explicit candidate models when optimizing for cost or 
 npx veryfront eval support-triage \
   --baseline-model anthropic/claude-sonnet-4-6 \
   --candidate-model moonshotai/kimi-k2.6 \
+  --candidate-model openai/gpt-5.4-nano \
   --json
 ```
 
