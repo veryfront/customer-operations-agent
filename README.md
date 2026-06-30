@@ -2,54 +2,6 @@
 
 A compact Veryfront Code example for a support escalation agent.
 
-## Quickstart
-
-Install dependencies and run structural checks:
-
-```bash
-npm install
-npm run check
-```
-
-Start the chat UI:
-
-```bash
-npm run dev -- --port 3010
-```
-
-Open `http://localhost:3010`.
-
-For live agent responses, log in to Veryfront or set provider credentials:
-
-```bash
-npx veryfront login
-```
-
-You can also set `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`.
-
-When credentials are available, run the agent checks:
-
-```bash
-npm run verify:eval
-npm run verify:agent
-```
-
-Run the workflow and source-defined triggers:
-
-```bash
-npm run verify:workflow
-npm run schedules
-npm run verify:schedule
-npm run webhooks
-npm run verify:webhook
-```
-
-Deploy to Veryfront Cloud:
-
-```bash
-npx veryfront deploy --env preview --force
-```
-
 ## Project overview
 
 The folder structure mirrors the agent flow: build the agent primitives first, expose them through chat, validate with evals, then automate and deploy.
@@ -79,7 +31,31 @@ Read the diagram in this order:
 7. `schedules/` and `webhooks/` call the workflow automatically.
 8. `veryfront.config.ts` keeps the same source deployable to Veryfront Cloud.
 
-## Build the agent
+## Setup and run locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the chat UI:
+
+```bash
+npm run dev -- --port 3010
+```
+
+Open `http://localhost:3010`.
+
+For live agent responses, log in to Veryfront or set provider credentials:
+
+```bash
+npx veryfront login
+```
+
+You can also set `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`.
+
+## Build agent
 
 - `agents/support-agent.ts`: agent ID, system prompt, skill, tool access, and step limit.
 - `skills/support-escalation/SKILL.md`: escalation process and allowed `search_knowledge` tool.
@@ -88,7 +64,7 @@ Read the diagram in this order:
 
 Local chat, evals, workflows, and Cloud runs all use the same tool name and response shape.
 
-## Try the chat UI
+## Use agent
 
 Try support questions that map to the included runbooks:
 
@@ -99,11 +75,19 @@ Try support questions that map to the included runbooks:
 
 The agent should search approved knowledge, separate facts from assumptions, identify the likely owner, and recommend the next customer-safe action.
 
-## Validate before automation
+## Eval agent
 
-`npm run check` runs structural checks without calling a model.
+Run structural checks before model-backed verification:
 
-`npm run verify:eval` runs the eval suite when model credentials are available.
+```bash
+npm run check
+```
+
+Run the eval suite when model credentials are available:
+
+```bash
+npm run verify:eval
+```
 
 The suite checks:
 
@@ -116,9 +100,15 @@ The suite checks:
 
 Reports are written to timestamped folders under `.veryfront/evals/`. Each dataset row declares `metadata.expectedKnowledge`, so retrieval quality is measured against the runbooks the case should use.
 
-`npm run verify:agent` builds the project, discovers routes, schedules, and webhooks, runs the eval suite, runs the workflow fixture, and runs both source-defined triggers.
+Run the full local verification path when credentials are available:
 
-For model comparison, pass explicit baseline and candidate models.
+```bash
+npm run verify:agent
+```
+
+`verify:agent` builds the project, discovers routes, schedules, and webhooks, runs the eval suite, runs the workflow fixture, and runs both source-defined triggers.
+
+For model comparison, pass explicit baseline and candidate models:
 
 ```bash
 npx veryfront eval support-triage \
@@ -130,17 +120,39 @@ npx veryfront eval support-triage \
 
 The comparison report writes per-model results plus `comparison.json` and `comparison.md` in the timestamped report folder.
 
-## Automate the agent
+## Automate agent
 
-`npm run verify:workflow` runs the workflow directly. It searches approved knowledge, asks `support-agent` to triage, and drafts scope, evidence, owner, and next action.
+Run the workflow directly:
 
-`npm run verify:schedule` and `npm run verify:webhook` run the source-defined triggers locally. Both triggers target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
+```bash
+npm run verify:workflow
+```
 
-## Deploy
+The workflow searches approved knowledge, asks `support-agent` to triage, and drafts scope, evidence, owner, and next action.
 
-`npx veryfront deploy --env preview --force` deploys the same project files. The hosted workflow can run `escalate-ticket` and resolve `search_knowledge` against the `knowledge/` files in this repository.
+Run the source-defined schedule and webhook locally:
 
-## Extend
+```bash
+npm run schedules
+npm run verify:schedule
+```
+
+```bash
+npm run webhooks
+npm run verify:webhook
+```
+
+Both triggers target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
+
+## Deploy agent
+
+```bash
+npx veryfront deploy --env preview --force
+```
+
+Cloud deploys the same project files. The hosted workflow can run `escalate-ticket` and resolve `search_knowledge` against the `knowledge/` files in this repository.
+
+## Extend project
 
 1. Keep the agent definition small in `agents/support-agent.ts`.
 2. Keep process instructions in `skills/support-escalation/SKILL.md`.
