@@ -2,7 +2,11 @@
 
 A compact Veryfront Code example for a support escalation agent.
 
-It shows how an agent definition, reusable skill, OKF knowledge, deterministic tool, chat UI, evals, workflow, source-defined triggers, and a Veryfront Cloud deploy path fit into one project.
+It shows the full path for a support escalation agent:
+
+- Define the agent with a reusable skill, OKF knowledge, and a deterministic tool.
+- Connect it to a streaming chat UI and eval suite.
+- Extend it into workflow automation, source-defined triggers, and Veryfront Cloud deployment.
 
 Use it as a starting point for support escalation agents, customer operations agents, or any agent that needs to answer from approved runbooks and produce grounded next actions.
 
