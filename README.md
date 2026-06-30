@@ -10,7 +10,7 @@ Veryfront Code organizes these primitives with clear source-tree conventions for
 customer-operations-agent/
   agents/        # agent definitions
   skills/        # reusable agent instructions
-  knowledge/     # approved OKF runbooks
+  knowledge/     # approved runbooks
   tools/         # deterministic tools
   app/           # chat UI and AG-UI route
   evals/         # retrieval and grounding checks
@@ -87,7 +87,7 @@ The comparison report writes per-model results plus `comparison.json` and `compa
 Test the `escalate-ticket` workflow with fixture input.
 
 ```bash
-npm run run:workflow
+npm run workflow:run
 ```
 
 This checks that `support-agent` can draft scope, evidence, owner, and next action.
@@ -98,7 +98,7 @@ Discover the source-defined schedule, then test it locally.
 
 ```bash
 npm run schedules
-npm run run:schedule
+npm run schedule:run
 ```
 
 ### Webhook
@@ -107,21 +107,21 @@ Discover the source-defined webhook, then test it locally.
 
 ```bash
 npm run webhooks
-npm run run:webhook
+npm run webhook:run
 ```
 
-The schedule and webhook both target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
+The schedule and webhook both target the same `escalate-ticket` workflow. In Veryfront Cloud, deployment creates or updates the hosted schedule and webhook from these source files.
 
 ## Deployment
 
 Sync local files to the `main` branch of your Veryfront project without deploying.
 
 ```bash
-npx veryfront push --branch main --force
+npx veryfront push --branch main
 ```
 
 Deploy the `main` branch to the preview environment.
 
 ```bash
-npx veryfront deploy --branch main --env preview --force
+npx veryfront deploy --branch main --env preview
 ```

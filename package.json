@@ -10,11 +10,11 @@
     "schedules": "veryfront schedules --json",
     "webhooks": "veryfront webhooks --json",
     "check": "npm run build && npm run routes && npm run schedules && npm run webhooks",
-    "run:workflow": "veryfront workflow run escalate-ticket --input \"$(cat fixtures/escalate-ticket.json)\"",
-    "run:schedule": "veryfront schedule run daily-support-triage --input fixtures/daily-support-triage.json",
-    "run:webhook": "veryfront webhook run customer-escalation --payload fixtures/customer-escalation-webhook.json",
+    "workflow:run": "veryfront workflow run escalate-ticket --input \"$(cat fixtures/escalate-ticket.json)\"",
+    "schedule:run": "veryfront schedule run daily-support-triage --input fixtures/daily-support-triage.json",
+    "webhook:run": "veryfront webhook run customer-escalation --payload fixtures/customer-escalation-webhook.json",
     "eval": "veryfront eval support-triage --json",
-    "verify": "npm run check && npm run eval && npm run run:workflow && npm run run:schedule && npm run run:webhook"
+    "verify": "npm run check && npm run eval && npm run workflow:run && npm run schedule:run && npm run webhook:run"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
