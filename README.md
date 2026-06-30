@@ -1,6 +1,6 @@
 # Customer Operations Agent
 
-A compact Veryfront Code project for a grounded support escalation agent.
+Grounded customer operations agent built with Veryfront Code.
 
 One source tree defines the agent, gives it an escalation skill, grounds it in OKF runbooks, exposes it through chat, verifies it with evals, automates escalation work, and deploys it to Veryfront Cloud.
 
