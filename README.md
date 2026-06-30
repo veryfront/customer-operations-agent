@@ -8,18 +8,18 @@ One source tree defines the agent, gives it an escalation skill, grounds it in O
 
 ```text
 customer-operations-agent/
-  agents/support-agent.ts              # agent ID, prompt, skill, and tool access
-  skills/support-escalation/SKILL.md   # escalation process
-  knowledge/*.md                       # approved OKF runbooks
-  tools/search-knowledge.ts            # createSearchKnowledgeTool() adapter
-  app/page.tsx                         # local chat UI
-  app/api/ag-ui/route.ts               # streaming AG-UI route
-  evals/                               # retrieval and grounding checks
-  workflows/escalate-ticket.ts         # repeatable escalation workflow
-  schedules/                           # source-defined schedule
-  webhooks/                            # source-defined webhook
-  veryfront.config.ts                  # project metadata
+  agents/        # agent definitions
+  skills/        # reusable agent instructions
+  knowledge/     # approved OKF runbooks
+  tools/         # deterministic tools
+  app/           # chat UI and AG-UI route
+  evals/         # retrieval and grounding checks
+  workflows/     # repeatable escalation operations
+  schedules/     # source-defined scheduled runs
+  webhooks/      # source-defined event runs
 ```
+
+Start with `agents/support-agent.ts`, then follow the project through `skills/`, `knowledge/`, `tools/`, `app/`, `evals/`, `workflows/`, `schedules/`, and `webhooks/`.
 
 Local chat, evals, workflows, triggers, and Cloud runs all use the same `support-agent` definition and `search_knowledge` response shape.
 
