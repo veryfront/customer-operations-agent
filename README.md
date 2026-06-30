@@ -2,9 +2,9 @@
 
 Grounded customer operations agent built with Veryfront Code.
 
-One source tree defines the agent, gives it an escalation skill, grounds it in OKF runbooks, exposes it through chat, verifies it with evals, automates escalation work, and deploys it to Veryfront Cloud.
+## Project overview
 
-## The agent is the project
+One source tree defines the agent, gives it an escalation skill, grounds it in OKF runbooks, exposes it through chat, verifies it with evals, automates escalation work, and deploys it to Veryfront Cloud.
 
 ```text
 customer-operations-agent/
@@ -19,48 +19,77 @@ customer-operations-agent/
   webhooks/      # source-defined event runs
 ```
 
-Start with `agents/support-agent.ts`, then follow the project through `skills/`, `knowledge/`, `tools/`, `app/`, `evals/`, `workflows/`, `schedules/`, and `webhooks/`.
+## Prerequisites
 
-Local chat, evals, workflows, triggers, and Cloud runs all use the same `support-agent` definition and `search_knowledge` response shape.
+- Node.js and npm.
+- Model access for chat, evals, workflows, and triggers: run `npx veryfront login` or set `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`.
 
-OKF reference: [knowledge docs](https://veryfront.com/docs/cloud/knowledge) and [CLI ingestion guide](https://veryfront.com/docs/code/guides/cli-knowledge-ingestion).
+## Getting started
 
-## Run it locally
+Install dependencies:
 
-| Step | Command |
-| --- | --- |
-| Install dependencies | `npm install` |
-| Start the chat UI | `npm run dev -- --port 3010` |
-| Log in for live model calls | `npx veryfront login` |
+```bash
+npm install
+```
+
+Start the chat UI:
+
+```bash
+npm run dev -- --port 3010
+```
 
 Open `http://localhost:3010`.
 
-You can also set `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`.
+## Try the agent
 
-## Talk to it
-
-Try runbook-backed support prompts:
+Ask support questions that match the included runbooks:
 
 - `Users cannot sign in with SSO after yesterday's deployment. Production support is blocked.`
 - `The customer's renewal invoice failed payment, but the workspace is still active.`
 - `A migration shipped this morning and users now see errors in the onboarding workflow.`
 - `One support manager cannot access the correct workspace after changing browsers.`
 
-A good response searches approved knowledge, separates facts from assumptions, names the likely owner, and recommends the next customer-safe action.
+A good response:
 
-## Verify it
+- Searches approved knowledge.
+- Separates facts from assumptions.
+- Names the likely owner.
+- Recommends the next customer-safe action.
 
-| Goal | Command | Notes |
-| --- | --- | --- |
-| Structural checks | `npm run check` | Builds the project and discovers routes, schedules, and webhooks. Does not call a model. |
-| Eval suite | `npm run verify:eval` | Requires model credentials. Checks tool use, retrieval, and grounded answers. |
-| Full local path | `npm run verify:agent` | Runs build discovery, evals, the workflow fixture, schedule trigger, and webhook trigger. |
+## Validate it
 
-Eval assertions include `agent.calledTool("search_knowledge")`, `agent.noFailedTools()`, `knowledge.recallAtK`, `knowledge.precisionAtK`, `knowledge.mrr`, and `answer.groundedness`.
+Run structural checks first. This does not call a model.
+
+```bash
+npm run check
+```
+
+Run the eval suite when model credentials are available.
+
+```bash
+npm run verify:eval
+```
+
+Run the full local path when credentials are available.
+
+```bash
+npm run verify:agent
+```
+
+`verify:agent` builds the project, discovers routes, schedules, and webhooks, runs the eval suite, runs the workflow fixture, and runs both source-defined triggers.
+
+The eval suite checks tool use, retrieval quality, and groundedness:
+
+- `agent.calledTool("search_knowledge")`
+- `agent.noFailedTools()`
+- `knowledge.recallAtK`
+- `knowledge.precisionAtK`
+- `knowledge.mrr`
+- `answer.groundedness`
 
 Reports are written to timestamped folders under `.veryfront/evals/`. Each dataset row declares `metadata.expectedKnowledge`, so retrieval quality is measured against the runbooks the case should use.
 
-Compare models with explicit baseline and candidate models:
+Compare models with explicit baseline and candidate models.
 
 ```bash
 npx veryfront eval support-triage \
@@ -74,17 +103,33 @@ The comparison report writes per-model results plus `comparison.json` and `compa
 
 ## Automate it
 
-| Goal | Command |
-| --- | --- |
-| Run the workflow fixture | `npm run verify:workflow` |
-| Discover and run the schedule | `npm run schedules` then `npm run verify:schedule` |
-| Discover and run the webhook | `npm run webhooks` then `npm run verify:webhook` |
+Run the workflow fixture.
+
+```bash
+npm run verify:workflow
+```
 
 The workflow searches approved knowledge, asks `support-agent` to triage, and drafts scope, evidence, owner, and next action.
+
+Run the source-defined schedule.
+
+```bash
+npm run schedules
+npm run verify:schedule
+```
+
+Run the source-defined webhook.
+
+```bash
+npm run webhooks
+npm run verify:webhook
+```
 
 Both triggers target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
 
 ## Deploy it
+
+Deploy a preview environment.
 
 ```bash
 npx veryfront deploy --env preview --force
@@ -94,14 +139,14 @@ Cloud deploys the same project files. The hosted workflow can run `escalate-tick
 
 ## Extend it
 
-| Need | Edit |
-| --- | --- |
-| Change agent behavior | `agents/support-agent.ts` |
-| Change the escalation process | `skills/support-escalation/SKILL.md` |
-| Add approved runbooks | `knowledge/` |
-| Add deterministic actions | `tools/` |
-| Add eval coverage | `evals/datasets/support-triage.json` |
-| Add repeatable operations | `workflows/` |
-| Add automatic operations | `schedules/` and `webhooks/` |
+Change the smallest file that owns the behavior:
+
+- Change agent behavior in `agents/support-agent.ts`.
+- Change the escalation process in `skills/support-escalation/SKILL.md`.
+- Add approved runbooks in `knowledge/`.
+- Add deterministic actions in `tools/`.
+- Add eval coverage in `evals/datasets/support-triage.json`.
+- Add repeatable operations in `workflows/`.
+- Add automatic operations in `schedules/` and `webhooks/`.
 
 Run the eval suite before deploying or switching models.
