@@ -1,10 +1,10 @@
 # Customer Operations Agent
 
-Grounded customer operations agent built with Veryfront Code.
+Grounded customer operations agent with an escalation skill, deterministic tools, and approved runbook knowledge.
 
 ## Project overview
 
-One source tree defines the agent, gives it an escalation skill, grounds it in OKF runbooks, exposes it through chat, verifies it with evals, automates escalation work, and deploys it to Veryfront Cloud.
+Veryfront Code organizes these primitives with clear source-tree conventions for agents, skills, knowledge, tools, app routes, evals, workflows, schedules, and webhooks.
 
 ```text
 customer-operations-agent/
@@ -48,13 +48,6 @@ Ask support questions that match the included runbooks:
 - `The customer's renewal invoice failed payment, but the workspace is still active.`
 - `A migration shipped this morning and users now see errors in the onboarding workflow.`
 - `One support manager cannot access the correct workspace after changing browsers.`
-
-A good response:
-
-- Searches approved knowledge.
-- Separates facts from assumptions.
-- Names the likely owner.
-- Recommends the next customer-safe action.
 
 ## Validate it
 
