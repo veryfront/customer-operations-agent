@@ -82,22 +82,28 @@ The comparison report writes per-model results plus `comparison.json` and `compa
 
 ## Automate agent
 
-Test the workflow fixture.
+### Workflow
+
+Test the `escalate-ticket` workflow with fixture input.
 
 ```bash
 npm run verify:workflow
 ```
 
-This executes `escalate-ticket` with fixture input and checks that `support-agent` can draft scope, evidence, owner, and next action.
+This checks that `support-agent` can draft scope, evidence, owner, and next action.
 
-Discover and test the source-defined schedule.
+### Schedule
+
+Discover the source-defined schedule, then test it locally.
 
 ```bash
 npm run schedules
 npm run verify:schedule
 ```
 
-Discover and test the source-defined webhook.
+### Webhook
+
+Discover the source-defined webhook, then test it locally.
 
 ```bash
 npm run webhooks
@@ -106,36 +112,6 @@ npm run verify:webhook
 
 The schedule and webhook both target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
 
-## Final verification
+## Deployment
 
-Run the full local verification path when model credentials are available.
-
-```bash
-npm run verify
-```
-
-`verify` chains structural checks, evals, workflow, schedule, and webhook checks.
-
-## Deploy it
-
-Deploy a preview environment.
-
-```bash
-npx veryfront deploy --env preview --force
-```
-
-Cloud deploys the same project files. The hosted workflow can run `escalate-ticket` and resolve `search_knowledge` against the `knowledge/` files in this repository.
-
-## Extend it
-
-Change the smallest file that owns the behavior:
-
-- Change agent behavior in `agents/support-agent.ts`.
-- Change the escalation process in `skills/support-escalation/SKILL.md`.
-- Add approved runbooks in `knowledge/`.
-- Add deterministic actions in `tools/`.
-- Add eval coverage in `evals/datasets/support-triage.json`.
-- Add repeatable operations in `workflows/`.
-- Add automatic operations in `schedules/` and `webhooks/`.
-
-Run `npm run verify:eval` before deploying or switching models.
+Push to the main branch and deploy to the preview environment of your Veryfront project.
