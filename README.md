@@ -57,58 +57,39 @@ You can also set `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, o
 
 ## Build agent
 
-- `agents/support-agent.ts`: agent ID, system prompt, skill, tool access, and step limit.
-- `skills/support-escalation/SKILL.md`: escalation process and allowed `search_knowledge` tool.
-- `knowledge/*.md`: OKF Markdown runbooks. See the [Veryfront knowledge docs](https://veryfront.com/docs/cloud/knowledge) and [CLI knowledge ingestion guide](https://veryfront.com/docs/code/guides/cli-knowledge-ingestion).
-- `tools/search-knowledge.ts`: standard `search_knowledge` tool registered with `createSearchKnowledgeTool()`.
+| File | Purpose |
+| --- | --- |
+| `agents/support-agent.ts` | Agent ID, system prompt, skill, tool access, and step limit. |
+| `skills/support-escalation/SKILL.md` | Escalation process and allowed `search_knowledge` tool. |
+| `knowledge/*.md` | OKF Markdown runbooks. See the [knowledge docs](https://veryfront.com/docs/cloud/knowledge) and [CLI ingestion guide](https://veryfront.com/docs/code/guides/cli-knowledge-ingestion). |
+| `tools/search-knowledge.ts` | Standard `search_knowledge` tool registered with `createSearchKnowledgeTool()`. |
 
 Local chat, evals, workflows, and Cloud runs all use the same tool name and response shape.
 
 ## Use agent
 
-Try support questions that map to the included runbooks:
+Try runbook-backed support prompts:
 
 - `Users cannot sign in with SSO after yesterday's deployment. Production support is blocked.`
 - `The customer's renewal invoice failed payment, but the workspace is still active.`
 - `A migration shipped this morning and users now see errors in the onboarding workflow.`
 - `One support manager cannot access the correct workspace after changing browsers.`
 
-The agent should search approved knowledge, separate facts from assumptions, identify the likely owner, and recommend the next customer-safe action.
+Expected behavior: search approved knowledge, separate facts from assumptions, name the likely owner, and recommend the next customer-safe action.
 
 ## Eval agent
 
-Run structural checks before model-backed verification:
+| Goal | Command | Notes |
+| --- | --- | --- |
+| Structural checks | `npm run check` | Builds the project and discovers routes, schedules, and webhooks. Does not call a model. |
+| Eval suite | `npm run verify:eval` | Requires model credentials. Checks tool use, retrieval, and grounded answers. |
+| Full local path | `npm run verify:agent` | Runs build discovery, evals, the workflow fixture, schedule trigger, and webhook trigger. |
 
-```bash
-npm run check
-```
-
-Run the eval suite when model credentials are available:
-
-```bash
-npm run verify:eval
-```
-
-The suite checks:
-
-- `agent.calledTool("search_knowledge")`
-- `agent.noFailedTools()`
-- `knowledge.recallAtK`
-- `knowledge.precisionAtK`
-- `knowledge.mrr`
-- `answer.groundedness`
+Eval assertions include `agent.calledTool("search_knowledge")`, `agent.noFailedTools()`, `knowledge.recallAtK`, `knowledge.precisionAtK`, `knowledge.mrr`, and `answer.groundedness`.
 
 Reports are written to timestamped folders under `.veryfront/evals/`. Each dataset row declares `metadata.expectedKnowledge`, so retrieval quality is measured against the runbooks the case should use.
 
-Run the full local verification path when credentials are available:
-
-```bash
-npm run verify:agent
-```
-
-`verify:agent` builds the project, discovers routes, schedules, and webhooks, runs the eval suite, runs the workflow fixture, and runs both source-defined triggers.
-
-For model comparison, pass explicit baseline and candidate models:
+Compare models with explicit baseline and candidate models:
 
 ```bash
 npx veryfront eval support-triage \
@@ -122,25 +103,13 @@ The comparison report writes per-model results plus `comparison.json` and `compa
 
 ## Automate agent
 
-Run the workflow directly:
-
-```bash
-npm run verify:workflow
-```
+| Goal | Command |
+| --- | --- |
+| Run the workflow fixture | `npm run verify:workflow` |
+| Discover and run the schedule | `npm run schedules` then `npm run verify:schedule` |
+| Discover and run the webhook | `npm run webhooks` then `npm run verify:webhook` |
 
 The workflow searches approved knowledge, asks `support-agent` to triage, and drafts scope, evidence, owner, and next action.
-
-Run the source-defined schedule and webhook locally:
-
-```bash
-npm run schedules
-npm run verify:schedule
-```
-
-```bash
-npm run webhooks
-npm run verify:webhook
-```
 
 Both triggers target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
 
@@ -154,11 +123,14 @@ Cloud deploys the same project files. The hosted workflow can run `escalate-tick
 
 ## Extend project
 
-1. Keep the agent definition small in `agents/support-agent.ts`.
-2. Keep process instructions in `skills/support-escalation/SKILL.md`.
-3. Add or edit OKF runbooks in `knowledge/`.
-4. Add deterministic integrations under `tools/` when the agent needs to act.
-5. Add eval cases in `evals/datasets/support-triage.json` before changing agent behavior.
-6. Add workflows under `workflows/` for repeatable multi-step operations.
-7. Add schedules or webhooks under `schedules/` and `webhooks/` when operations should run automatically.
-8. Run the eval suite before deploying or switching models.
+| Change | Where |
+| --- | --- |
+| Keep the agent definition small. | `agents/support-agent.ts` |
+| Keep process instructions in the skill. | `skills/support-escalation/SKILL.md` |
+| Add or edit OKF runbooks. | `knowledge/` |
+| Add deterministic integrations. | `tools/` |
+| Add eval cases before changing agent behavior. | `evals/datasets/support-triage.json` |
+| Add repeatable multi-step operations. | `workflows/` |
+| Add automatic operations. | `schedules/` and `webhooks/` |
+
+Run the eval suite before deploying or switching models.
