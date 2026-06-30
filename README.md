@@ -54,7 +54,7 @@ Ask support questions that match the included runbooks:
 Run the eval suite when model credentials are available.
 
 ```bash
-npm run verify:eval
+npm run eval
 ```
 
 The eval suite checks tool use, retrieval quality, and grounded answers:
@@ -87,7 +87,7 @@ The comparison report writes per-model results plus `comparison.json` and `compa
 Test the `escalate-ticket` workflow with fixture input.
 
 ```bash
-npm run verify:workflow
+npm run run:workflow
 ```
 
 This checks that `support-agent` can draft scope, evidence, owner, and next action.
@@ -98,7 +98,7 @@ Discover the source-defined schedule, then test it locally.
 
 ```bash
 npm run schedules
-npm run verify:schedule
+npm run run:schedule
 ```
 
 ### Webhook
@@ -107,7 +107,7 @@ Discover the source-defined webhook, then test it locally.
 
 ```bash
 npm run webhooks
-npm run verify:webhook
+npm run run:webhook
 ```
 
 The schedule and webhook both target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
