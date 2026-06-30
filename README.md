@@ -58,27 +58,27 @@ A good response:
 
 ## Validate it
 
-Run structural checks first. This does not call a model.
+Start with structural checks. They build the project and discover routes, schedules, and webhooks without calling a model.
 
 ```bash
 npm run check
 ```
 
-Run the eval suite when model credentials are available.
+Run the eval suite when model credentials are available. This checks tool use, retrieval quality, and grounded answers.
 
 ```bash
 npm run verify:eval
 ```
 
-Run the full local path when credentials are available.
+Run the full local verification path when credentials are available.
 
 ```bash
 npm run verify:agent
 ```
 
-`verify:agent` builds the project, discovers routes, schedules, and webhooks, runs the eval suite, runs the workflow fixture, and runs both source-defined triggers.
+`verify:agent` chains the structural checks, eval suite, workflow check, schedule check, and webhook check.
 
-The eval suite checks tool use, retrieval quality, and groundedness:
+Eval assertions include:
 
 - `agent.calledTool("search_knowledge")`
 - `agent.noFailedTools()`
@@ -103,29 +103,29 @@ The comparison report writes per-model results plus `comparison.json` and `compa
 
 ## Automate it
 
-Run the workflow fixture.
+Test the workflow fixture.
 
 ```bash
 npm run verify:workflow
 ```
 
-The workflow searches approved knowledge, asks `support-agent` to triage, and drafts scope, evidence, owner, and next action.
+This executes `escalate-ticket` with fixture input and checks that `support-agent` can draft scope, evidence, owner, and next action.
 
-Run the source-defined schedule.
+Discover and test the source-defined schedule.
 
 ```bash
 npm run schedules
 npm run verify:schedule
 ```
 
-Run the source-defined webhook.
+Discover and test the source-defined webhook.
 
 ```bash
 npm run webhooks
 npm run verify:webhook
 ```
 
-Both triggers target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
+The schedule and webhook both target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
 
 ## Deploy it
 
@@ -149,4 +149,4 @@ Change the smallest file that owns the behavior:
 - Add repeatable operations in `workflows/`.
 - Add automatic operations in `schedules/` and `webhooks/`.
 
-Run the eval suite before deploying or switching models.
+Run `npm run verify:eval` before deploying or switching models.
