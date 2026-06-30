@@ -111,10 +111,10 @@ The schedule and webhook both target the same `escalate-ticket` workflow. In Ver
 Run the full local verification path when model credentials are available.
 
 ```bash
-npm run verify:agent
+npm run verify
 ```
 
-`verify:agent` chains structural checks, evals, workflow, schedule, and webhook checks.
+`verify` chains structural checks, evals, workflow, schedule, and webhook checks.
 
 ## Deploy it
 
