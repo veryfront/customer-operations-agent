@@ -10,16 +10,6 @@ It shows the full path for a support escalation agent:
 
 Use it as a starting point for support escalation agents, customer operations agents, or any agent that needs to answer from approved runbooks and produce grounded next actions.
 
-## What it demonstrates
-
-- Agent: a `support-agent` definition with skills and tools enabled
-- Skill: reusable `support-escalation` triage instructions
-- Knowledge and tools: [OKF Markdown](https://veryfront.com/docs/cloud/knowledge) runbooks exposed through `search_knowledge`
-- Chat: a streaming [AG-UI](https://docs.ag-ui.com/introduction) route and Veryfront chat component
-- Quality: evals for retrieval, tool reliability, groundedness, and model comparison
-- Operations: a workflow, schedule, and webhook that run locally and reconcile to Cloud
-- Deploy: a Veryfront Cloud deploy path using the same project files
-
 ## How it works
 
 ```mermaid
@@ -36,13 +26,7 @@ flowchart LR
   Workflow --> Agent
 ```
 
-The agent runtime is intentionally small:
-
-- `agents/support-agent.ts` defines the agent, attaches the skill, and enables tools.
-- `app/api/ag-ui/route.ts` exposes `support-agent` over AG-UI.
-- `app/page.tsx` renders the Veryfront chat component.
-
-Around that runtime, the project adds source-controlled knowledge, evals that prove the agent retrieves the right runbooks, and repeatable workflow steps for automation.
+Everything routes through `support-agent`: the chat route, eval suite, and escalation workflow all reuse the same skill, knowledge, and `search_knowledge` tool. The schedule and webhook call the workflow when the same escalation path should run automatically.
 
 ## Project structure
 
@@ -92,7 +76,7 @@ You can also set `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, o
 
 The app can build and expose routes without credentials. Chat responses, eval runs, workflow agent steps, and trigger runs need model access.
 
-## Agent primitives
+## Build the agent
 
 `agents/support-agent.ts` keeps the agent definition small: it sets the agent ID, system prompt, `support-escalation` skill, tool access, and step limit.
 
@@ -102,7 +86,7 @@ Source knowledge lives in `knowledge/` as Markdown with OKF frontmatter. See the
 
 `tools/search-knowledge.ts` registers the standard `search_knowledge` tool with `createSearchKnowledgeTool()`. Local chat, evals, local workflows, and Cloud workflow runs use the same tool name and response shape.
 
-## Try the agent
+## Try the chat UI
 
 Try support questions that map to the included runbooks:
 
@@ -113,7 +97,13 @@ Try support questions that map to the included runbooks:
 
 The agent should search approved knowledge, separate facts from assumptions, identify the likely owner, and recommend the next customer-safe action.
 
-## Run evals
+## Validate the agent
+
+Run structural checks that do not call a model:
+
+```bash
+npm run check
+```
 
 The eval suite checks whether the agent retrieves the right knowledge and keeps its answer grounded in that evidence.
 
@@ -136,7 +126,7 @@ The suite includes these checks:
 
 Each dataset row declares `metadata.expectedKnowledge`, so retrieval quality is measured against the exact runbooks the case should use.
 
-## Compare models
+### Compare models
 
 Use a strong baseline and explicit candidate models when optimizing for cost or latency.
 
@@ -150,7 +140,17 @@ npx veryfront eval support-triage \
 
 The comparison report writes per-model results plus `comparison.json` and `comparison.md` in the timestamped report folder. It keeps `baselineModel` and `candidateModels` separate, shows gate failures, and includes gateway-sourced token and cost metadata when the run goes through Veryfront Cloud.
 
-## Run the workflow
+Run the full agent verification path when credentials are available:
+
+```bash
+npm run verify:agent
+```
+
+`verify:agent` builds the project, discovers routes, schedules, and webhooks, runs the eval suite, runs the workflow fixture, and runs both source-defined triggers. It requires Veryfront login or provider credentials.
+
+## Automate the agent
+
+### Run the workflow
 
 ```bash
 npm run verify:workflow
@@ -158,7 +158,7 @@ npm run verify:workflow
 
 The workflow searches approved project knowledge, asks `support-agent` to triage the issue, then drafts an escalation summary with scope, evidence, owner, and next action.
 
-## Run source-defined triggers
+### Run source-defined triggers
 
 Schedules and webhooks are source files, so they can be reviewed, tested, and deployed with the project.
 
@@ -173,22 +173,6 @@ npm run verify:webhook
 ```
 
 Both triggers target the same `escalate-ticket` workflow. Locally, the commands execute the workflow immediately. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these files.
-
-## Verify the project
-
-Run structural checks that do not call a model:
-
-```bash
-npm run check
-```
-
-Run the full agent verification path:
-
-```bash
-npm run verify:agent
-```
-
-`verify:agent` builds the project, discovers routes, schedules, and webhooks, runs the eval suite, runs the workflow fixture, and runs both source-defined triggers. It requires Veryfront login or provider credentials.
 
 ## Deploy
 
