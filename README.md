@@ -114,4 +114,14 @@ The schedule and webhook both target the same `escalate-ticket` workflow. In Ver
 
 ## Deployment
 
-Push to the main branch and deploy to the preview environment of your Veryfront project.
+Sync local files to the `main` branch of your Veryfront project without deploying.
+
+```bash
+npx veryfront push --branch main --force
+```
+
+Deploy the `main` branch to the preview environment.
+
+```bash
+npx veryfront deploy --branch main --env preview --force
+```
