@@ -33,4 +33,4 @@ project-specific retrieval tools.
 
 ## Inference
 
-Agent routes need model access. Use `veryfront login` for the Veryfront Cloud gateway, set `VERYFRONT_API_TOKEN`, or set provider keys such as `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`.
+Agent routes need model access. Use `npx veryfront login` for the Veryfront Cloud gateway. Use custom provider credentials only with matching model settings.

@@ -22,7 +22,6 @@ customer-operations-agent/
 ## Prerequisites
 
 - Node.js and npm.
-- Model access for chat, evals, workflows, and triggers: run `npx veryfront login` or set `VERYFRONT_API_TOKEN`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GOOGLE_API_KEY`.
 
 ## Getting started
 
@@ -30,6 +29,12 @@ Install dependencies:
 
 ```bash
 npm install
+```
+
+Sign in to the Veryfront Cloud gateway so chat, evals, workflows, schedules, and webhooks can access models:
+
+```bash
+npx veryfront login
 ```
 
 Start the chat UI:
@@ -51,7 +56,7 @@ Ask support questions that match the included runbooks:
 
 ## Validate the agent
 
-Run the eval suite when model credentials are available.
+Run the eval suite after signing in.
 
 ```bash
 npm run eval
@@ -79,6 +84,8 @@ npx veryfront eval support-triage \
 ```
 
 The comparison report writes per-model results plus `comparison.json` and `comparison.md` in the timestamped report folder.
+
+Use custom provider credentials only with matching model settings.
 
 ## Automate agent
 
