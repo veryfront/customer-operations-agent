@@ -49,29 +49,15 @@ Ask support questions that match the included runbooks:
 - `A migration shipped this morning and users now see errors in the onboarding workflow.`
 - `One support manager cannot access the correct workspace after changing browsers.`
 
-## Validate it
+## Validate the agent
 
-Start with structural checks. They build the project and discover routes, schedules, and webhooks without calling a model.
-
-```bash
-npm run check
-```
-
-Run the eval suite when model credentials are available. This checks tool use, retrieval quality, and grounded answers.
+Run the eval suite when model credentials are available.
 
 ```bash
 npm run verify:eval
 ```
 
-Run the full local verification path when credentials are available.
-
-```bash
-npm run verify:agent
-```
-
-`verify:agent` chains the structural checks, eval suite, workflow check, schedule check, and webhook check.
-
-Eval assertions include:
+The eval suite checks tool use, retrieval quality, and grounded answers:
 
 - `agent.calledTool("search_knowledge")`
 - `agent.noFailedTools()`
@@ -94,7 +80,7 @@ npx veryfront eval support-triage \
 
 The comparison report writes per-model results plus `comparison.json` and `comparison.md` in the timestamped report folder.
 
-## Automate it
+## Automate agent
 
 Test the workflow fixture.
 
@@ -119,6 +105,16 @@ npm run verify:webhook
 ```
 
 The schedule and webhook both target the same `escalate-ticket` workflow. In Veryfront Cloud, deploy reconciliation creates or updates the hosted schedule and webhook from these source files.
+
+## Final verification
+
+Run the full local verification path when model credentials are available.
+
+```bash
+npm run verify:agent
+```
+
+`verify:agent` chains structural checks, evals, workflow, schedule, and webhook checks.
 
 ## Deploy it
 
