@@ -23,8 +23,11 @@
     ]
   },
   "dependencies": {
+    "@veryfront/ext-bundler-esbuild": "^0.1.998",
+    "@veryfront/ext-content-mdx": "^0.1.998",
+    "@veryfront/ext-css-tailwind": "^0.1.998",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "veryfront": "^0.1.983"
+    "veryfront": "^0.1.998"
   }
 }

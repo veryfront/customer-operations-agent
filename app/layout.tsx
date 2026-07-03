@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         <title>Customer Operations Agent</title>
       </Head>
       <ChatThemeScope className="flex flex-col h-screen">
-        <ConversationsProvider storageKey="havana-conversations">
+        <ConversationsProvider storageKey="customer-operations-agent-conversations">
           <AppShell className="flex-1 min-h-0">
             <AppShell.Sidebar side="left" className="border-r border-[var(--outline-border)]">
               <AppShell.SidebarContent className="p-0">
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
                 <div className="flex flex-1 justify-center">
                   <Tabs
                     value={activeTab}
-                    onValueChange={(v) => router.push(v === 'uploads' ? '/uploads' : '/')}
+                    onValueChange={(v: string) => router.push(v === 'uploads' ? '/uploads' : '/')}
                   >
                     <TabsItem value="chat">Chat</TabsItem>
                     <TabsItem value="uploads">Uploads</TabsItem>
