@@ -1,7 +1,7 @@
 'use client'
 
 import { Head } from 'veryfront/head'
-import { AppShell, ChatSidebar, ConversationsProvider, Tabs, TabsItem } from 'veryfront/chat'
+import { AppShell, ChatSidebar, ChatThemeScope, ConversationsProvider, Tabs, TabsItem } from 'veryfront/chat'
 import { useRouter } from 'veryfront/router'
 
 export default function RootLayout({ children }: { children: React.ReactNode }): React.ReactNode {
@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
       <Head>
         <title>Customer Operations Agent</title>
       </Head>
-      <div className="flex flex-col h-screen bg-[var(--background)]">
+      <ChatThemeScope className="flex flex-col h-screen">
         <ConversationsProvider storageKey="havana-conversations">
           <AppShell className="flex-1 min-h-0">
             <AppShell.Sidebar side="left" className="border-r border-[var(--outline-border)]">
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             </AppShell.Main>
           </AppShell>
         </ConversationsProvider>
-      </div>
+      </ChatThemeScope>
     </>
   )
 }
