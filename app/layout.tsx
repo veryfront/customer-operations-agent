@@ -8,6 +8,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
   const router = useRouter()
   const activeTab = router.pathname.startsWith('/uploads') ? 'uploads' : 'chat'
 
+  // `/custom` is the fully-composed example — it owns its entire shell (its own
+  // theme scope, sidebar, header, layout). Hand it a bare passthrough so nothing
+  // from the minimal example's AppShell wraps it. Reachable only by typing the
+  // URL; there is intentionally no nav link.
+  if (router.pathname.startsWith('/custom')) {
+    return (
+      <>
+        <Head>
+          <title>Composed Chat — Customer Operations Agent</title>
+        </Head>
+        {children}
+      </>
+    )
+  }
+
   return (
     <>
       <Head>

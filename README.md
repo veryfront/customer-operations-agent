@@ -45,6 +45,22 @@ npm run dev -- --port 3010
 
 Open `http://localhost:3010`.
 
+## Two chat examples
+
+This project ships two contrasting chat UIs over the same agent and backend:
+
+- **`/` — minimal (black box).** One line: `<Chat agentId="support-agent" api="/api/ag-ui" />`.
+  Batteries included, zero wiring. Start here.
+- **`/custom` — fully composed.** The same experience assembled from veryfront's
+  own building blocks instead of the black-box preset. State comes from the hooks
+  (`useChat`, `useConversations`, `useAgents`, `useAgentMetadata`, `useUpload`,
+  `useVoiceInput`); the UI is composed from vf components (`AppShell`,
+  `ChatSidebar`, `AgentPicker`, `AgentAvatar`, `Chat.Root`, `Chat.MessageList`,
+  `Chat.Empty`, `Chat.Input`) with almost no custom markup — every label, colour,
+  and handler is a prop. `<Chat>` itself is just a preset composition of these
+  same pieces; this shows the layer beneath it. Reachable by typing the URL
+  (`/custom`); there is no nav link. Read `app/custom/page.tsx` top to bottom.
+
 ## Try the agent
 
 Ask support questions that match the included runbooks:
