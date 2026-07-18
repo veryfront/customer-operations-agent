@@ -37,6 +37,7 @@ import {
   ConversationsProvider,
   Message,
   ToolCall,
+  getAgentPromptSuggestions,
   useAgentMetadata,
   useAgents,
   useConversationChat,
@@ -56,13 +57,57 @@ const MODELS: ModelOption[] = [
   { value: 'anthropic/claude-sonnet-4-6', label: 'Claude Sonnet 4.6' },
 ]
 
-/** Inline mail icon — no icon dependency. */
+/** Inline icons — no icon dependency. */
 function MailIcon(): React.JSX.Element {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="m3 7 9 6 9-6" />
     </svg>
+  )
+}
+
+function StopIcon(): React.JSX.Element {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <rect x="6" y="6" width="12" height="12" rx="2" />
+    </svg>
+  )
+}
+
+/**
+ * Send the composer's text plus any resolved attachments as one turn, guarding
+ * against in-flight uploads. This is glue that veryfront-code#2941 (A2) was meant
+ * to move into `ChatInput.Root` — but the published types don't expose
+ * `sendMessage` / `onClearAttachments` yet, so it lives here for now.
+ */
+function useSubmitWithAttachments(
+  chat: ReturnType<typeof useConversationChat>['chat'],
+  upload: ReturnType<typeof useUpload>,
+): (event?: React.FormEvent) => void {
+  return React.useCallback(
+    (event) => {
+      event?.preventDefault()
+      if (chat.status === 'streaming' || chat.status === 'submitted') return
+      const stillUploading = upload.attachments.some(
+        (attachment) => attachment.state === 'uploading' || attachment.state === 'processing',
+      )
+      if (stillUploading) return
+      const text = chat.input.trim()
+      const files = upload.attachments
+        .filter((attachment): attachment is typeof attachment & { url: string } => Boolean(attachment.url))
+        .map((attachment) => ({
+          type: 'file' as const,
+          mediaType: attachment.type ?? 'application/octet-stream',
+          url: attachment.url,
+          filename: attachment.name,
+        }))
+      if (!text && files.length === 0) return
+      chat.setInput('')
+      upload.clear()
+      void chat.sendMessage({ text, files })
+    },
+    [chat, upload],
   )
 }
 
@@ -96,6 +141,10 @@ function Shell(): React.JSX.Element {
     [conversations],
   )
 
+  // Selecting a thread flips `activeId` immediately, but `active` (the loaded
+  // conversation *with messages*) arrives async — so wait until it catches up
+  // before mounting, or `useConversationChat` would seed from a stale thread.
+  // (A provider-exposed "active thread ready" signal would remove this guard.)
   const threadReady = conversations.activeId != null && conversations.active?.id === conversations.activeId
 
   return (
@@ -246,41 +295,12 @@ function ConversationThread({ agentId }: { agentId: string }): React.JSX.Element
     if (source.url) window.open(source.url, '_blank', 'noopener,noreferrer')
   }, [])
 
-  const submit = React.useCallback(
-    (event?: React.FormEvent) => {
-      event?.preventDefault()
-      if (chat.status === 'streaming' || chat.status === 'submitted') return
-      const stillUploading = upload.attachments.some(
-        (attachment) => attachment.state === 'uploading' || attachment.state === 'processing',
-      )
-      if (stillUploading) return
-      const text = chat.input.trim()
-      const files = upload.attachments
-        .filter((attachment): attachment is typeof attachment & { url: string } => Boolean(attachment.url))
-        .map((attachment) => ({
-          type: 'file' as const,
-          mediaType: attachment.type ?? 'application/octet-stream',
-          url: attachment.url,
-          filename: attachment.name,
-        }))
-      if (!text && files.length === 0) return
-      chat.setInput('')
-      upload.clear()
-      void chat.sendMessage({ text, files })
-    },
-    [chat, upload],
-  )
+  const submit = useSubmitWithAttachments(chat, upload)
 
-  // Agent prompt suggestions are already `{ label, prompt }` — pass them straight
-  // to Chat.Empty; the click hands back the prompt, so no lookup.
-  const suggestions = React.useMemo(() => {
-    const list = agent?.suggestions?.suggestions ?? []
-    return list.flatMap((suggestion) =>
-      suggestion.type === 'prompt' && 'prompt' in suggestion && suggestion.prompt
-        ? [{ label: suggestion.title || suggestion.prompt, prompt: suggestion.prompt }]
-        : [],
-    )
-  }, [agent])
+  // The shipped helper normalizes the agent's suggestions to prompt strings.
+  // (The richer `{ label, prompt }` variant, `getAgentPromptSuggestionItems`,
+  // isn't publicly exported — so short chip labels would still need massaging.)
+  const suggestions = getAgentPromptSuggestions(agent ?? null)
 
   const isEmpty = chat.messages.length === 0
 
@@ -288,7 +308,8 @@ function ConversationThread({ agentId }: { agentId: string }): React.JSX.Element
     <Chat.Root
       messages={chat.messages}
       input={chat.input}
-      isLoading={chat.status === 'streaming' || chat.status === 'submitted'}
+      status={chat.status}
+      streamingMessageId={chat.streamingMessageId}
       error={chat.error}
       setInput={chat.setInput}
       onSubmit={submit}
@@ -320,7 +341,6 @@ function ConversationThread({ agentId }: { agentId: string }): React.JSX.Element
               <Message.Root
                 key={message.id}
                 message={message}
-                isStreaming={chat.streamingMessageId === message.id}
                 editMessage={chat.editMessage}
                 onReload={() => void chat.reload()}
                 className="flex gap-3"
@@ -409,8 +429,9 @@ function MessageComposer({
           <div className="flex items-center gap-1.5">
             <ChatInput.Model />
             <ChatInput.Voice />
-            {/* One control: Send, flipping to Stop while streaming. */}
-            <ChatInput.Submit icon={<MailIcon />} />
+            {/* One control: `icon` is the idle/send state, `stopIcon` the
+                streaming state — it flips between them by status. */}
+            <ChatInput.Submit icon={<MailIcon />} stopIcon={<StopIcon />} />
           </div>
         </div>
       </div>
