@@ -1,9 +1,14 @@
 'use client'
 
-import { Chat } from 'veryfront/chat'
+import { Chat, useChat } from 'veryfront/chat'
+import { csrfHeaders } from '@/lib/csrf.ts'
 
 export default function ChatPage(): React.JSX.Element {
-  // uploadApi routes composer attachments through /api/uploads; without it
-  // files are inlined as data: URLs, which the agent runtime reads as empty.
-  return <Chat agentId="customer-operations-agent" api="/api/ag-ui" uploadApi="/api/uploads" className="flex-1 min-h-0" />
+  // Wire the chat through `useChat` with the framework CSRF header pair, matching
+  // the agentic-job-submission-processing reference. The agent is bound by the
+  // AG-UI route (`createAgUiHandler("customer-operations-agent")`), so it is no
+  // longer passed here.
+  const chat = useChat({ api: '/api/ag-ui', headers: csrfHeaders() })
+
+  return <Chat chat={chat} className="flex-1 min-h-0" placeholder="What customer issue should we triage?" />
 }
