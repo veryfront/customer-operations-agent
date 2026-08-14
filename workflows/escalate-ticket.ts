@@ -51,7 +51,7 @@ export default workflow({
         },
       }),
       step("triage", {
-        agent: "support-agent",
+        agent: "customer-operations-agent",
         input: ({ knowledge }) => ({
           task: "Triage this customer issue using approved project knowledge and decide whether escalation is needed.",
           issue,
@@ -59,7 +59,7 @@ export default workflow({
         }),
       }),
       step("draft-escalation", {
-        agent: "support-agent",
+        agent: "customer-operations-agent",
         input: ({ triage }) => ({
           task: "Draft the internal escalation summary with scope, evidence, owner, and next action.",
           triage,
