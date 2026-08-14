@@ -10,7 +10,7 @@ export default evalAgent({
   name: "Support triage quality",
   description:
     "Checks that the customer operations agent retrieves approved knowledge and produces grounded triage guidance.",
-  target: "agent:support-agent",
+  target: "agent:customer-operations-agent",
   dataset: datasets.json("evals/datasets/support-triage.json"),
   metrics: [
     metrics.agent.calledTool("search_knowledge").gate(),

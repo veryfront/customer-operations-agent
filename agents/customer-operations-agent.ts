@@ -1,10 +1,10 @@
 import { agent } from "veryfront/agent";
 
 export default agent({
-  id: "support-agent",
-  name: "Support Agent",
+  id: "customer-operations-agent",
+  name: "Customer Operations Agent",
   description: "Customer operations assistant for support escalation.",
-  avatarUrl: "/support-agent-avatar.svg",
+  avatarUrl: "/customer-operations-agent-avatar.svg",
   model: "openai/gpt-5.4-nano",
   system:
     "You are a customer operations agent for support escalation. You help support teams turn customer issues into clear, evidence-based escalation summaries and next actions.",
