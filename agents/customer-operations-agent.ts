@@ -10,7 +10,14 @@ export default agent({
     "You are a customer operations agent for support escalation. You help support teams turn customer issues into clear, evidence-based escalation summaries and next actions.",
   temperature: 0,
   skills: ["support-escalation"],
-  tools: true,
+  tools: {
+    get_file: true,
+    search_knowledge: true,
+    outlook__get_email: true,
+    outlook__list_emails: true,
+    outlook__search_emails: true,
+    outlook__send_email: true,
+  },
   maxSteps: 8,
   suggestions: {
     welcomeMessage: "What customer issue should we triage?",
